@@ -123,7 +123,7 @@ ssh_configuration_hardening(){
     sed -i '/X11Forwarding/s/yes/NO/' /etc/ssh/sshd_config
     sed -i 's/#AllowAgentForwarding[[:blank:]]yes/AllowAgentForwarding NO/g' /etc/ssh/sshd_config
     sed -i 's/#TCPKeepAlive[[:blank:]]yes/TCPKeepAlive NO/g' /etc/ssh/sshd_config
-    #sed -i 's/#Port[[:blank:]]22/Port 2222/' /etc/ssh/sshd_config
+    sed -iE 's/#Port[[:blank:]][0-9]{1,4}/Port ${SSH_PORT:-2222}/' /etc/ssh/sshd_config
     sed -i 's/#UseDNS[[:blank:]]yes/UseDNS NO/' /etc/ssh/sshd_config
     
 }
