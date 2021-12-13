@@ -40,12 +40,12 @@ setup_bashrc(){
 EOF
 
 
-    mv /root/.bashrc /root/.bashrc_old
-    cp /tmp/.bashrc /root/.bashrc
+    mv -f /root/.bashrc /root/.bashrc_old
+    cp -f /tmp/.bashrc /root/.bashrc
     chmod 770 /root/.bashrc
 
-    mv /etc/skel/.bashrc /etc/skel/.bashrc_old
-    cp /etc/skel/ /etc/skel/.bashrc
+    mv -f /etc/skel/.bashrc /etc/skel/.bashrc_old
+    cp -f /tmp/.bashrc /etc/skel/.bashrc
     chown root:root /etc/skel/.bashrc
     chmod 755 /etc/skel/.bashrc
     cat >> /etc/skel/.bashrc << EOF
