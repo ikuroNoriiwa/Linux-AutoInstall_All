@@ -53,7 +53,7 @@ EOF
 
     for username in $(grep -E "((bash)|(sh)):" /etc/passwd|tail -1); do
 
-        if [[ "$username" == "root" ]]; then
+        if [[ "$username" != "root" ]]; then
             cp /etc/skel/.bashrc /home/$username/.bashrc
             chmod 770 /home/$username/.bashrc
         fi
