@@ -9,6 +9,9 @@ main(){
     update_package
     required_package
     language
+
+    ## package
+
     set_static_ip_form_dhcp_eth0
     clean_hostname
     change_time

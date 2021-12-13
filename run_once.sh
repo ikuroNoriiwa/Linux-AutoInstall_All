@@ -51,11 +51,11 @@ EOF
     cat >> /etc/skel/.bashrc << EOF
     export PS1="\[\e[32m\][\[\e[m\]\[\e[31m\]\u\[\e[m\]\[\e[33m\]@\[\e[m\]\[\e[32m\]\h\[\e[m\]:\[\e[36m\]\w\[\e[m\]\[\e[32m\]]\[\e[m\]\[\e[32;47m\]\\$\[\e[m\] "
 
-    for user in $(grep -E "((bash)|(sh)):" /etc/passwd|tail -1); do
+    for username in $(grep -E "((bash)|(sh)):" /etc/passwd|tail -1); do
 
-        if [[ "$user" -ne "root" ]]: then 
-            cp /etc/skel/.bashrc /home/$user/.bashrc
-            chmod 770 /home/$user/.bashrc
+        if [[ "$username" -ne "root" ]]: then 
+            cp /etc/skel/.bashrc /home/$username/.bashrc
+            chmod 770 /home/$username/.bashrc
         fi
     done
 

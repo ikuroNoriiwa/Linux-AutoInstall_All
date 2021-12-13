@@ -10,7 +10,7 @@ download_rpm(){
 
 update_package(){
     dnf clean all
-    rm -r /var/cache/dnf
+    rm -rf /var/cache/dnf
     dnf upgrade -y
     dnf update -y
 }
@@ -56,9 +56,9 @@ setup_issue(){
     *                                                                               *
     *********************************************************************************
 EOF
-    cp -f /etc/issue.net /etc/motd
+    yes | cp -f /etc/issue.net /etc/motd
     figlet READ_ABOVE_STATEMENT >>/etc/motd
-    cp -f /etc/issue.net /etc/issue
+    yes | cp -f /etc/issue.net /etc/issue
 
 }
 
@@ -79,18 +79,22 @@ ssh_key_creation(){
 
     #############################
     #                           #
-    #   creat ssh key for user  #
+    #   creat ssh key for users #
     #                           #
     #############################
 
+    for username in $(grep -E "((bash)|(sh)):" /etc/passwd|tail -1); do
 
-    mkdir -v /home/$user/.ssh
-    chmod -v 700 /home/$user/.ssh
-    ssh-keygen -t ed25519 -f /home/$user/.ssh/id_ed25519 -q -N ""
-    chmod -v 700 /home/$user
+        if [[ "$username" -ne "root" ]]: then 
 
-    #test
-    chown -R $user:$user /home/$user/.ssh
+        mkdir -v /home/$username/.ssh
+        chmod -v 700 /home/$user/.ssh
+        ssh-keygen -t ed25519 -f /home/$username/.ssh/id_ed25519 -q -N ""
+        chmod -v 700 /home/$username
+
+        #test
+        chown -R $username:$user /home/$username/.ssh
+    fi
 
 }
 
