@@ -114,7 +114,7 @@ timedatectl set-ntp on
 set_static_ip_form_dhcp(){
     ip=`hostname -I`
     gw=`ip r | grep default | awk '{ print $3}'`
-    it=`ip a | grep "state UP" | awk -F ": " '{ print $2 }'`
+    it=`ip a | grep "state UP" | awk -F ": " '{ print $2 }' |  head -n 1`
 
     cat > /etc/sysconfig/network-scripts/ifcfg-$it << EOF
 DEVICE=$it
