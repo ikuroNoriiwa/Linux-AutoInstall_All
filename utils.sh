@@ -94,7 +94,8 @@ ssh_key_creation(){
 
         #test
         chown -R $username:$user /home/$username/.ssh
-    fi
+        fi
+    done
 
 }
 
