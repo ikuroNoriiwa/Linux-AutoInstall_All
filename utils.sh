@@ -69,7 +69,7 @@ ssh_key_creation(){
     #                           #
     #############################
 
-    if ![ $(ls ~/.ssh/*.pub) ]; then
+    if ! [ $(ls ~/.ssh/*.pub) ]; then
 
         mkdir -v ~/.ssh
         chmod -v 700 ~/.ssh
@@ -88,7 +88,7 @@ ssh_key_creation(){
 
     for username in $(grep -E "((bash)|(sh)):" /etc/passwd|tail -1); do
 
-        if [[ "$username" != "root" ]] && ![ $(ls /home/$username/.ssh*.pub) ]; then
+        if [[ "$username" != "root" ]] && ! [ $(ls /home/$username/.ssh*.pub) ]; then
         
         mkdir -v /home/$username/.ssh
         chmod -v 700 /home/$user/.ssh
