@@ -83,9 +83,9 @@ ssh_key_creation(){
     #                           #
     #############################
 
-    for username in $(grep -E "((bash)|(sh)):" /etc/passwd|tail -1): do
+    for username in $(grep -E "((bash)|(sh)):" /etc/passwd|tail -1); do
 
-        if [[ "$username" == "root" ]]: then
+        if [[ "$username" == "root" ]]; then
 
         mkdir -v /home/$username/.ssh
         chmod -v 700 /home/$user/.ssh
