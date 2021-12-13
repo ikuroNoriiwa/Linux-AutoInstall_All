@@ -111,7 +111,7 @@ timedatectl set-timezone "${TIMEZONE:-Europe/Paris}"
 timedatectl set-ntp on 
 }
 
-set_static_ip_form_dhcp(){
+set_static_ip_form_dhcp_eth0(){
     ip=`hostname -I`
     gw=`ip r | grep default | awk '{ print $3}'`
     it=`ip a | grep "state UP" | awk -F ": " '{ print $2 }' |  head -n 1`

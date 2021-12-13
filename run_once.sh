@@ -55,3 +55,26 @@ EOF
     export PS1="\[\e[32m\][\[\e[m\]\[\e[31m\]\u\[\e[m\]\[\e[33m\]@\[\e[m\]\[\e[32m\]\h\[\e[m\]:\[\e[36m\]\w\[\e[m\]\[\e[32m\]]\[\e[m\]\[\e[32;47m\]\\$\[\e[m\] "
 EOF
 }
+
+run_once_setup_bashrc(){
+    if [ $(grep "alias fucking" /root/.bashrc) ] && [ $(grep "alias plantuZ" /root/.bashrc) ]; then
+        echo "Ever run"
+        exit
+    fi
+    setup_bashrc
+}
+
+last_ssh_login(){
+
+    cat >> /etc/profile << EOF
+    last | head -n 5
+EOF
+}
+
+run_once_last_ssh_login(){
+    if [ $(grep "last | head -n 5" /etc/profile) ]; then
+        echo "Ever run"
+        exit
+    fi
+    last_ssh_login
+}
