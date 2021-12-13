@@ -67,19 +67,19 @@ cat << '_EOF_' > /etc/nginx/conf.d/bookstack.conf
 
 
 server {
-  listen 81;
-  listen [::]:81;
+  listen 80;
+  listen [::]:80;
   server_name wiki.esgi.local;
-  return 301 https://$server_name$request_uri;
+  #return 301 https://$server_name$request_uri;
 
 }
   
 server {
-  listen 443 ssl;
-  ssl_certificate /root/ssl-key/wiki.esgi.local.crt;
-  ssl_certificate_key /root/ssl-key/esgi.local.key;
-  ssl_protocols TLSv1.2;
-  ssl_prefer_server_ciphers on;
+  #listen 443 ssl;
+  #ssl_certificate /root/ssl-key/wiki.esgi.local.crt;
+  #ssl_certificate_key /root/ssl-key/esgi.local.key;
+  #ssl_protocols TLSv1.2;
+  #ssl_prefer_server_ciphers on;
   root /var/www/bookstack/public;
   access_log  /var/log/nginx/bookstack_access.log;
   error_log  /var/log/nginx/bookstack_error.log;
