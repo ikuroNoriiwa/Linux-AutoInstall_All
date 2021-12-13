@@ -9,14 +9,17 @@ download_rpm(){
 }
 
 update_package(){
-    yum update -y
+    dnf clean all
+    rm -r /var/cache/dnf
+    dnf upgrade -y
+    dnf update -y
 }
 
 required_package(){
-    yum remove -y iwl* bluez* telnet
-    yum install epel-release -y
-    yum config-manager --set-enabled powertools
-    yum install vim mlocate tmux zip dstat iotop git psmisc tree mc curl  openssl lynis pigz glibc-all-langpacks rsync htop glances net-tools bash-completion lynx figlet rkhunter -y
+    dnf remove -y iwl* bluez* telnet
+    dnf install epel-release -y
+    dnf config-manager --set-enabled powertools
+    dnf install vim mlocate tmux zip dstat iotop git psmisc tree mc curl  openssl lynis pigz glibc-all-langpacks rsync htop glances net-tools bash-completion lynx figlet rkhunter -y
 }
 
 language(){
@@ -53,9 +56,9 @@ setup_issue(){
     *                                                                               *
     *********************************************************************************
 EOF
-    cp /etc/issue.net /etc/motd
+    cp -f /etc/issue.net /etc/motd
     figlet READ_ABOVE_STATEMENT >>/etc/motd
-    cp /etc/issue.net /etc/issue
+    cp -f /etc/issue.net /etc/issue
 
 }
 

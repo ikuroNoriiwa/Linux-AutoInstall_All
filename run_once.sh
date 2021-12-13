@@ -44,20 +44,26 @@ EOF
     cp /tmp/.bashrc /root/.bashrc
     chmod 770 /root/.bashrc
 
-    user=$(grep bash /etc/passwd|tail -1| cut -d: -f1)
-
-
-    mv /home/$user/.bashrc /home/$user/.bashrc_old
-    cp /tmp/.bashrc /home/$user/.bashrc
-    chown $user /home/$user/.bashrc
-    chmod 770 /home/$user/.bashrc
-    cat >> /home/$user/.bashrc << EOF
+    mv /etc/skel/.bashrc /etc/skel/.bashrc_old
+    cp /etc/skel/ /etc/skel/.bashrc
+    chown root:root /etc/skel/.bashrc
+    chmod 755 /etc/skel/.bashrc
+    cat >> /etc/skel/.bashrc << EOF
     export PS1="\[\e[32m\][\[\e[m\]\[\e[31m\]\u\[\e[m\]\[\e[33m\]@\[\e[m\]\[\e[32m\]\h\[\e[m\]:\[\e[36m\]\w\[\e[m\]\[\e[32m\]]\[\e[m\]\[\e[32;47m\]\\$\[\e[m\] "
+
+    for user in $(grep -E "((bash)|(sh)):" /etc/passwd|tail -1); do
+
+        if [[ "$user" -ne "root" ]]: then 
+            cp /etc/skel/.bashrc /home/$user/.bashrc
+            chmod 770 /home/$user/.bashrc
+        fi
+    done
+
 EOF
 }
 
 run_once_setup_bashrc(){
-    if [ $(grep "alias fucking" /root/.bashrc) ] && [ $(grep "alias plantuZ" /root/.bashrc) ]; then
+    if [ $(grep "alias fucking" /etc/skel/.bashrc) ] && [ $(grep "alias plantuZ" /etc/skel/.bashrc) ]; then
         echo "Ever run"
         exit
     fi
