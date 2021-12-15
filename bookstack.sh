@@ -24,12 +24,12 @@ mkdir ssl-key && cd ssl-key/
 
 echo "Géneration de CA keys en cours ..."
 openssl genrsa -des3 -out rootCA.key 4096
-openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.crt
+openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.crt -subj '/CN='
 openssl genrsa -out esgi.local.key 2048
 
 
 echo "Géneration de SSL key pour le site wiki.esgi.local  en cours ..."
-openssl req -new -key esgi.local.key -out wiki.esgi.local.csr
+openssl req -new -key esgi.local.key -out wiki.esgi.local.csr '/CN='
 openssl x509 -req -in wiki.esgi.local.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out wiki.esgi.local.crt -days 500 -sha256
 
 echo "Géneration de SSL key pour le site sso.esgi.local  en cours ..."
