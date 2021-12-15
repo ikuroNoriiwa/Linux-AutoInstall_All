@@ -45,6 +45,7 @@ EOF
 
 }
 
+
 main_keycloak(){
 	download_openjdk
 	install_keycloak "15.1.0"
