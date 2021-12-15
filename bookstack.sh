@@ -193,11 +193,11 @@ SAML2_AUTOLOAD_METADATA=true
 EOF
 }
 
-bookstack(){
-    ssl_keys
-    requirements_bookstack_mariadb_php
-    conf_mariadb
-    conf_nginx
-    bookstack_en
-    conf_bookstack_for_SSO
-}
+#bookstack(){
+#    ssl_keys
+#    requirements_bookstack_mariadb_php
+#    conf_mariadb
+#    conf_nginx
+#    bookstack_en
+#    conf_bookstack_for_SSO
+#}
