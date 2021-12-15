@@ -21,30 +21,24 @@ create_user_keycloak(){
 
 
 create_systemd_keycloak(){
-	mkdir /etc/keycloak
-	cp /opt/keycloak/docs/contrib/scripts/systemd/wildfly.conf /etc/keycloak/keycloak.conf
-	cp /opt/keycloak/docs/contrib/scripts/systemd/launch.sh /opt/keycloak/bin/
-	chown keycloak: /opt/keycloak/bin/launch.sh
-	sed -i "s/wildfly/keycloak/g" /opt/keycloak/bin/launch.sh
 	
-	cat >> /etc/systemd/system/keycloak.service << EOF
+cat > /etc/systemd/system/keycloak.service <<EOF
+
 [Unit]
-Description=The Keycloak Server
-After=syslog.target network.target
-Before=httpd.service
+Description=Keycloak
+After=network.target
+
 [Service]
-Environment=LAUNCH_JBOSS_IN_BACKGROUND=1
-EnvironmentFile=/etc/keycloak/keycloak.conf
+Type=idle
 User=keycloak
 Group=keycloak
-LimitNOFILE=102642
-PIDFile=/var/run/keycloak/keycloak.pid
-ExecStart=/opt/keycloak/bin/launch.sh $WILDFLY_MODE $WILDFLY_CONFIG $WILDFLY_BIND
-StandardOutput=null
+ExecStart=/opt/keycloak/bin/standalone.sh -b 0.0.0.0
+TimeoutStartSec=600
+TimeoutStopSec=600
+
 [Install]
 WantedBy=multi-user.target
 EOF
-
 	systemctl daemon-reload
 	systemctl enable keycloak
 	systemctl start keycloak

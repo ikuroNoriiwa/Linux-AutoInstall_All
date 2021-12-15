@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+source keycloak.sh
 
 main_keycloak(){
 	download_openjdk
