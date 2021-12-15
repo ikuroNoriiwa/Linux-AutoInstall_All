@@ -10,7 +10,7 @@ download_rpm(){
 
 update_package(){
     dnf clean all
-    rm -r /var/cache/dnf
+    rm -rf /var/cache/dnf
     dnf upgrade -y
     dnf update -y
 }
@@ -56,9 +56,9 @@ setup_issue(){
     *                                                                               *
     *********************************************************************************
 EOF
-    cp -f /etc/issue.net /etc/motd
+    yes | cp -f /etc/issue.net /etc/motd
     figlet READ_ABOVE_STATEMENT >>/etc/motd
-    cp -f /etc/issue.net /etc/issue
+    yes | cp -f /etc/issue.net /etc/issue
 
 }
 
@@ -69,28 +69,36 @@ ssh_key_creation(){
     #                           #
     #############################
 
+    if ! [ $(ls ~/.ssh/*.pub) ]; then
 
-    mkdir -v ~/.ssh
-    chmod -v 700 ~/.ssh
+        mkdir -v ~/.ssh
+        chmod -v 700 ~/.ssh
 
-    ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -q -N ""
-    cat /root/.ssh/id_ed25519.pub >> /root/.ssh/authorized_keys
-    echo ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGqyToSio/QdJELe8irhi1Yy9zBC4LVSWJr3OQRYIYLf root@MXLINUX >> /root/.ssh/authorized_keys
+        ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -q -N ""
+        cat /root/.ssh/id_ed25519.pub >> /root/.ssh/authorized_keys
+        echo ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGqyToSio/QdJELe8irhi1Yy9zBC4LVSWJr3OQRYIYLf root@MXLINUX >> /root/.ssh/authorized_keys
+
+    fi
 
     #############################
     #                           #
-    #   creat ssh key for user  #
+    #   creat ssh key for users #
     #                           #
     #############################
 
+    for username in $(grep -E "((bash)|(sh)):" /etc/passwd|tail -1); do
 
-    mkdir -v /home/$user/.ssh
-    chmod -v 700 /home/$user/.ssh
-    ssh-keygen -t ed25519 -f /home/$user/.ssh/id_ed25519 -q -N ""
-    chmod -v 700 /home/$user
+        if [[ "$username" != "root" ]] && ! [ $(ls /home/$username/.ssh*.pub) ]; then
+        
+        mkdir -v /home/$username/.ssh
+        chmod -v 700 /home/$user/.ssh
+        ssh-keygen -t ed25519 -f /home/$username/.ssh/id_ed25519 -q -N ""
+        chmod -v 700 /home/$username
 
-    #test
-    chown -R $user:$user /home/$user/.ssh
+        #test
+        chown -R $username:$user /home/$username/.ssh
+        fi
+    done
 
 }
 

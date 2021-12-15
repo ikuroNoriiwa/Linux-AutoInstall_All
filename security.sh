@@ -2,7 +2,7 @@
 
 requirements(){
 
-    #sentenforce 0
+    setenforce 0
     sed -i 's/enforcing/disabled/g' /etc/selinux/config
     systemctl stop firewalld
     systemctl disable firewalld 

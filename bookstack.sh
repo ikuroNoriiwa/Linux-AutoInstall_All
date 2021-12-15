@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 
 
 requirements_bookstack_mariadb_php(){
@@ -15,6 +16,29 @@ ln -s /opt/remi/php73/root/usr/lib64/php/modules/tidy.so /usr/lib64/php/modules/
 echo "extension=tidy" >> /etc/php.ini
 #OK
 }
+
+ssl_keys(){
+
+cd /root 
+mkdir ssl-key && cd ssl-key/
+
+echo "Géneration de CA keys en cours ..."
+openssl genrsa -des3 -out rootCA.key 4096
+openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.crt
+openssl genrsa -out esgi.local.key 2048
+
+
+echo "Géneration de SSL key pour le site wiki.esgi.local  en cours ..."
+openssl req -new -key esgi.local.key -out wiki.esgi.local.csr
+openssl x509 -req -in wiki.esgi.local.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out wiki.esgi.local.crt -days 500 -sha256
+
+echo "Géneration de SSL key pour le site sso.esgi.local  en cours ..."
+openssl req -new -key esgi.local.key -out sso.esgi.local.csr
+openssl x509 -req -in sso.esgi.local.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out sso.esgi.local.crt -days 500 -sha256
+
+}
+
+
 
 conf_mariadb(){
 systemctl enable --now mariadb.service
@@ -72,14 +96,14 @@ server {
   server_name wiki.esgi.local;
   #return 301 https://$server_name$request_uri;
 
-}
+#}
   
-server {
-  #listen 443 ssl;
-  #ssl_certificate /root/ssl-key/wiki.esgi.local.crt;
-  #ssl_certificate_key /root/ssl-key/esgi.local.key;
-  #ssl_protocols TLSv1.2;
-  #ssl_prefer_server_ciphers on;
+#server {
+  listen 443 ssl;
+  ssl_certificate /root/ssl-key/wiki.esgi.local.crt;
+  ssl_certificate_key /root/ssl-key/esgi.local.key;
+  ssl_protocols TLSv1.2;
+  ssl_prefer_server_ciphers on;
   root /var/www/bookstack/public;
   access_log  /var/log/nginx/bookstack_access.log;
   error_log  /var/log/nginx/bookstack_error.log;
@@ -113,7 +137,7 @@ systemctl enable --now php-fpm.service
 }
 
 
-bookstack(){
+bookstack_env(){
 mkdir -p /var/www/sessions
 git clone https://github.com/BookStackApp/BookStack.git --branch release --single-branch /var/www/bookstack
 
@@ -155,12 +179,25 @@ chown -R nginx:nginx /var/www/{bookstack,sessions}
 chmod -R 755 bootstrap/cache public/uploads storage
 }
 
+conf_bookstack_for_SSO(){
+cat >> /var/www/bookstack/.env << EOF
 
-main(){
+AUTH_METHOD=saml2
+SAML2_NAME=keycloak
+SAML2_EMAIL_ATTRIBUTE=urn:oid:1.2.840.113549.1.9.1
+SAML2_EXTERNAL_ID_ATTRIBUTE=sub
+SAML2_DISPLAY_NAME_ATTRIBUTES=urn:oid:2.5.4.42|urn:oid:2.5.4.4
+SAML2_IDP_ENTITYID:https://sso.esgi.local/auth/realms/KOLLAB/protocol/saml/descriptor
+SAML2_AUTOLOAD_METADATA=true
+
+EOF
+}
+
+bookstack(){
+    ssl_keys
     requirements_bookstack_mariadb_php
     conf_mariadb
     conf_nginx
-    bookstack
+    bookstack_en
+    conf_bookstack_for_SSO
 }
-
-main
