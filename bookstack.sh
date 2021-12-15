@@ -137,7 +137,7 @@ systemctl enable --now php-fpm.service
 }
 
 
-bookstack(){
+bookstack_env(){
 mkdir -p /var/www/sessions
 git clone https://github.com/BookStackApp/BookStack.git --branch release --single-branch /var/www/bookstack
 
@@ -179,11 +179,25 @@ chown -R nginx:nginx /var/www/{bookstack,sessions}
 chmod -R 755 bootstrap/cache public/uploads storage
 }
 
+conf_bookstack_for_SSO(){
+cat >> /var/www/bookstack/.env << EOF
+
+AUTH_METHOD=saml2
+SAML2_NAME=keycloak
+SAML2_EMAIL_ATTRIBUTE=urn:oid:1.2.840.113549.1.9.1
+SAML2_EXTERNAL_ID_ATTRIBUTE=sub
+SAML2_DISPLAY_NAME_ATTRIBUTES=urn:oid:2.5.4.42|urn:oid:2.5.4.4
+SAML2_IDP_ENTITYID:https://sso.esgi.local/auth/realms/KOLLAB/protocol/saml/descriptor
+SAML2_AUTOLOAD_METADATA=true
+
+EOF
+}
 
 bookstack(){
     ssl_keys
     requirements_bookstack_mariadb_php
     conf_mariadb
     conf_nginx
-    bookstack
+    bookstack_en
+    conf_bookstack_for_SSO
 }
