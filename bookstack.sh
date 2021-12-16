@@ -212,7 +212,8 @@ php artisan migrate --force
 php artisan bookstack:create-admin --email="nimda@esgi.local" --name="Nimda" --password="P@ssW0rD"
 php artisan bookstack:create-admin --email="esgi@esgi.local" --name="esgi" --password="P@ssW0rD"
 
-chown -R nginx:nginx /var/www/{bookstack,sessions}
+# chown -R nginx:nginx /var/www/{bookstack,sessions}
+chown -R nginx:nginx /var/www/bookstack
 chmod -R 750 /var/www/bookstack/{bootstrap/cache,public/uploads,storage}
 }
 
