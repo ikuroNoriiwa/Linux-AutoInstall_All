@@ -28,7 +28,7 @@ main_keycloak(){
 	## No host named add currently so only 127.0.0.1 will work
 	config_credential_all https://sso.esgi.local/auth $MASTER_REALM $ADMIN_USERNAME $ADMIN_PASSWORD
 	# config_credential_all http://127.0.0.1/auth $MASTER_REALM $ADMIN_USERNAME $ADMIN_PASSWORD
-       	create_realm $ESGI_REALM $USER_DEFAULT_STATUS
+	create_realm $ESGI_REALM $USER_DEFAULT_STATUS
 
 	create_user_on_realm KOLLAB nimda $DEFAULT_PASSWORD $USER_DEFAULT_STATUS
 	create_user_on_realm KOLLAB esgi $DEFAULT_PASSWORD $USER_DEFAULT_STATUS
