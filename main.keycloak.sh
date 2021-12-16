@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 
-source keycloak/*
+source keycloak/util.keycloak.sh
+source keycloak/keycloak.sh
 
 DEFAULT_PASSWORD="password"
 ADMIN_USERNAME="admin"
