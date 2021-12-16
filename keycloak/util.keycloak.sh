@@ -34,7 +34,7 @@ config_credential_all(){
 	# $3 : user
 	# $4 : password
 	
-	$KEYCLOAK/bin/kcadm.sh --server $1 --realm $2 --user $3 --password $4
+	$KEYCLOAK/bin/kcadm.sh config credential --server $1 --realm $2 --user $3 --password $4
 
 }
 
@@ -43,6 +43,6 @@ create_client(){
 	# $2 : client ID 
 	# $3 : status 
 
-	$KEYCLOAK/bin/kcadm.sh -r $1 -s clientId=$2 -s enabled=$3
+	$KEYCLOAK/bin/kcadm.sh create clients -r $1 -s clientId=$2 -s enabled=$3
 }
 

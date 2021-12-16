@@ -29,11 +29,11 @@ openssl genrsa -out esgi.local.key 2048
 
 
 echo "Géneration de SSL key pour le site wiki.esgi.local  en cours ..."
-openssl req -new -key esgi.local.key -out wiki.esgi.local.csr '/CN='
+openssl req -new -key esgi.local.key -out wiki.esgi.local.csr -subj '/CN='
 openssl x509 -req -in wiki.esgi.local.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out wiki.esgi.local.crt -days 500 -sha256
 
 echo "Géneration de SSL key pour le site sso.esgi.local  en cours ..."
-openssl req -new -key esgi.local.key -out sso.esgi.local.csr
+openssl req -new -key esgi.local.key -out sso.esgi.local.csr -subj '/CN='
 openssl x509 -req -in sso.esgi.local.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out sso.esgi.local.crt -days 500 -sha256
 
 }
