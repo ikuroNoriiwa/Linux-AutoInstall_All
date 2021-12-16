@@ -13,7 +13,7 @@ main(){
     ## package
 
     set_static_ip_form_dhcp_eth0
-    clean_hostname
+    clean_hostname wiki .esgi.local
     change_time
 
     setup_issue
