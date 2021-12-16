@@ -17,7 +17,7 @@ main_keycloak(){
 	create_systemd_keycloak
 	#config sso 
 	create_admin_user $ADMIN_USERNAME $ADMIN_PASSWORD $MASTER_REALM
-	config_credential_all https://sso.esgi.local/auth $MASTER_REALM $ADMIN_USERNAME $ADMIN_PASSWORD
+	config_credential_all http://192.168.43.210:8080/auth $MASTER_REALM $ADMIN_USERNAME $ADMIN_PASSWORD
        	create_realm $ESGI_REALM $USER_DEFAULT_STATUS
 
 	create_user_on_realm KOLLAB nimda $DEFAULT_PASSWORD $USER_DEFAULT_STATUS
