@@ -34,7 +34,7 @@ config_credential_all(){
 	# $3 : user
 	# $4 : password
 	
-	$KEYCLOAK/bin/kcadm.sh config credential --server $1 --realm $2 --user $3 --password $4
+	$KEYCLOAK/bin/kcadm.sh config credentials --server $1 --realm $2 --user $3 --password $4
 
 }
 
