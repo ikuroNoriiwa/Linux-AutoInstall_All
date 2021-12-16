@@ -51,12 +51,12 @@ FLUSH PRIVILEGES;
 quit"
 
 fpmconf=/etc/php-fpm.d/www.conf
-sed -i "s|^listen =.*$|listen = /var/run/php-fpm.sock|" $fpmconf
-sed -i "s|^;listen.owner =.*$|listen.owner = nginx|" $fpmconf
-sed -i "s|^;listen.group =.*$|listen.group = nginx|" $fpmconf
-sed -i "s|^user = apache.*$|user = nginx ; PHP-FPM running user|" $fpmconf
-sed -i "s|^group = apache.*$|group = nginx ; PHP-FPM running group|" $fpmconf
-sed -i "s|^php_value\[session.save_path\].*$|php_value[session.save_path] = /var/www/sessions|" $fpmconf
+# sed -i "s|^listen =.*$|listen = /var/run/php-fpm.sock|" $fpmconf
+# sed -i "s|^;listen.owner =.*$|listen.owner = nginx|" $fpmconf
+# sed -i "s|^;listen.group =.*$|listen.group = nginx|" $fpmconf
+sed -i "s|^user =.*$|user = nginx ; PHP-FPM running user|" $fpmconf
+sed -i "s|^group =.*$|group = nginx ; PHP-FPM running group|" $fpmconf
+# sed -i "s|^php_value\[session.save_path\].*$|php_value[session.save_path] = /var/www/sessions|" $fpmconf
 }
 
 conf_nginx(){
@@ -89,47 +89,84 @@ _EOF_
 
 cat << '_EOF_' > /etc/nginx/conf.d/bookstack.conf
 
+server {
+   listen 80;
+   server_name wiki.esgi.local;
+   root /var/www/bookstack/public;
+
+   access_log  /var/log/nginx/bookstack_access.log;
+   error_log  /var/log/nginx/bookstack_error.log;
+
+   client_max_body_size 1G;
+   fastcgi_buffers 64 4K;
+
+   index  index.php;
+
+   location / {
+     try_files $uri $uri/ /index.php?$query_string;
+   }
+
+   location ~ ^/(?:\.htaccess|data|config|db_structure\.xml|README) {
+     deny all;
+   }
+
+   location ~ \.php(?:$|/) {
+     fastcgi_split_path_info ^(.+\.php)(/.+)$;
+     include fastcgi_params;
+     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+     fastcgi_param PATH_INFO $fastcgi_path_info;
+     fastcgi_pass unix:/run/php-fpm/www.sock;
+   }
+
+   location ~* \.(?:jpg|jpeg|gif|bmp|ico|png|css|js|swf)$ {
+     expires 30d;
+     access_log off;
+   }
+ }
+
 
 server {
-  listen 80;
-  listen [::]:80;
+   listen 443 ssl;
+  listen [::]:443 ssl;
   server_name wiki.esgi.local;
-  #return 301 https://$server_name$request_uri;
-
-#}
-  
-#server {
-  listen 443 ssl;
   ssl_certificate /root/ssl-key/wiki.esgi.local.crt;
   ssl_certificate_key /root/ssl-key/esgi.local.key;
   ssl_protocols TLSv1.2;
   ssl_prefer_server_ciphers on;
+
   root /var/www/bookstack/public;
+
   access_log  /var/log/nginx/bookstack_access.log;
   error_log  /var/log/nginx/bookstack_error.log;
+
   client_max_body_size 1G;
   fastcgi_buffers 64 4K;
-  index  index.php index.html;
+
+  index  index.php;
 
   location / {
     try_files $uri $uri/ /index.php?$query_string;
   }
+
   location ~ ^/(?:\.htaccess|data|config|db_structure\.xml|README) {
     deny all;
   }
+
   location ~ \.php(?:$|/) {
     fastcgi_split_path_info ^(.+\.php)(/.+)$;
     include fastcgi_params;
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     fastcgi_param PATH_INFO $fastcgi_path_info;
-    fastcgi_pass unix:/var/run/php-fpm.sock;
+    fastcgi_pass unix:/run/php-fpm/www.sock;
   }
+
   location ~* \.(?:jpg|jpeg|gif|bmp|ico|png|css|js|swf)$ {
     expires 30d;
     access_log off;
   }
 }
 _EOF_
+
 
 systemctl enable --now nginx.service
 systemctl enable --now php-fpm.service
@@ -138,7 +175,7 @@ systemctl enable --now php-fpm.service
 
 
 bookstack_env(){
-mkdir -p /var/www/sessions
+# mkdir -p /var/www/sessions
 git clone https://github.com/BookStackApp/BookStack.git --branch release --single-branch /var/www/bookstack
 
 
@@ -176,7 +213,7 @@ php artisan bookstack:create-admin --email="nimda@esgi.local" --name="Nimda" --p
 php artisan bookstack:create-admin --email="esgi@esgi.local" --name="esgi" --password="P@ssW0rD"
 
 chown -R nginx:nginx /var/www/{bookstack,sessions}
-chmod -R 755 bootstrap/cache public/uploads storage
+chmod -R 750 /var/www/bookstack/{bootstrap/cache,public/uploads,storage}
 }
 
 conf_bookstack_for_SSO(){
@@ -198,6 +235,6 @@ EOF
 #    requirements_bookstack_mariadb_php
 #    conf_mariadb
 #    conf_nginx
-#    bookstack_en
+#    bookstack_env
 #    conf_bookstack_for_SSO
 #}
